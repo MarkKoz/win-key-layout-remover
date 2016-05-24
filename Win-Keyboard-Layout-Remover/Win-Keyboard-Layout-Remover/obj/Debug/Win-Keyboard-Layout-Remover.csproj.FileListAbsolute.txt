@@ -1,0 +1,1 @@
+C:\GitHub\C#\Win-Keyboard-Layout-Remover\Win-Keyboard-Layout-Remover\Win-Keyboard-Layout-Remover\bin\Debug\Win-Keyboard-Layout-Remover.exe.config

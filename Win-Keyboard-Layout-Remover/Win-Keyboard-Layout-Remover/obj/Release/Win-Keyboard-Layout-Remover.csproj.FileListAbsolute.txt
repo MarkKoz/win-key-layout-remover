@@ -1,0 +1,7 @@
+C:\GitHub\C#\Win-Keyboard-Layout-Remover\Win-Keyboard-Layout-Remover\Win-Keyboard-Layout-Remover\bin\Release\Win-Keyboard-Layout-Remover.exe.config
+C:\GitHub\C#\Win-Keyboard-Layout-Remover\Win-Keyboard-Layout-Remover\Win-Keyboard-Layout-Remover\bin\Release\Win-Keyboard-Layout-Remover.exe
+C:\GitHub\C#\Win-Keyboard-Layout-Remover\Win-Keyboard-Layout-Remover\Win-Keyboard-Layout-Remover\bin\Release\Win-Keyboard-Layout-Remover.pdb
+C:\GitHub\C#\Win-Keyboard-Layout-Remover\Win-Keyboard-Layout-Remover\Win-Keyboard-Layout-Remover\bin\Release\System.Management.Automation.dll
+C:\GitHub\C#\Win-Keyboard-Layout-Remover\Win-Keyboard-Layout-Remover\Win-Keyboard-Layout-Remover\obj\Release\Win-Keyboard-Layout-Remover.csprojResolveAssemblyReference.cache
+C:\GitHub\C#\Win-Keyboard-Layout-Remover\Win-Keyboard-Layout-Remover\Win-Keyboard-Layout-Remover\obj\Release\Win-Keyboard-Layout-Remover.exe
+C:\GitHub\C#\Win-Keyboard-Layout-Remover\Win-Keyboard-Layout-Remover\Win-Keyboard-Layout-Remover\obj\Release\Win-Keyboard-Layout-Remover.pdb
