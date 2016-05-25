@@ -9,7 +9,10 @@ using System.IO;
 
 namespace Win_Keyboard_Layout_Remover
 {
-	internal class Program
+	/// <summary>
+	/// Contains the main loop and a method for logging.
+	/// </summary>
+	public class Program
 	{
 		/// <summary>
 		/// Logs to file and prints to console a <c>string</c>.
@@ -33,38 +36,40 @@ namespace Win_Keyboard_Layout_Remover
 		/// <seealso cref="System.Collections.Generic.List&lt;T/&gt;"/><br/>
 		/// <seealso cref="GetSet.GetCurrentKeyboardLayout()"/><br/>
 		/// <seealso cref="GetSet.SetInputMethod(int)"/><br/>
-		private static void Main()
+		static void Main()
 		{
 			PowerShellExecutor ps = new PowerShellExecutor();
 			dynamic list = ps.ExecuteSynchronously("Get-WinUserLanguageList", false, null, null).BaseObject;
-
 			while (true)
 			{
 				dynamic newList = ps.ExecuteSynchronously("Get-WinUserLanguageList", false, null, null).BaseObject;
 				dynamic replaceList = ps.ExecuteSynchronously("Get-WinUserLanguageList", false, null, null).BaseObject;
-				int layoutId = GetSet.GetCurrentKeyboardLayout();
+				int langId = GetSet.GetCurrentKeyboardLayout();
 
 				if (list.Count != newList.Count)
 				{
 					Logger($"New language was detected while window \"{GetSet.GetActiveWindowTitle()}\" was active.");
-					Boolean found = false;
 					for (int i = 0; i < newList.Count; i++)
 					{
 						var newItem = newList[i];
+						Boolean found = false;
 						foreach (var oldItem in list) if (newItem.LanguageTag == oldItem.LanguageTag) found = true;
 						if (!found) replaceList.RemoveAt(i);
 					}
 					ps.ExecuteSynchronously("param($finalList) Set-WinUserLanguageList($finalList) -Force", true, "finalList", replaceList);
 					Logger("New language removed.");
-					GetSet.SetInputMethod(layoutId);
+					GetSet.SetInputMethod(langId);
 				}
 				list = ps.ExecuteSynchronously("Get-WinUserLanguageList", false, null, null).BaseObject;
-				Thread.Sleep(1000);
+				Thread.Sleep(2000);
 			}
 		}
 	}
 
-	internal class GetSet
+	/// <summary>
+	/// Contains methods for retrieving window and keyboard layout information and setting keyboard layouts.
+	/// </summary>
+	public class GetSet
 	{
 
 		[DllImport("user32.dll")]
@@ -86,10 +91,9 @@ namespace Win_Keyboard_Layout_Remover
 		private static extern IntPtr LoadKeyboardLayout(string pwszKLID, uint flags);
 
 		/// <summary>
-		/// Gets the culture identifier for the active keyboard layout for the current foreground window.
+		/// Gets the input locale identifier for the active keyboard layout for the current foreground window.
 		/// </summary>
-		/// <returns>the culture identifier for the active keyboard layout for the current foreground window.</returns>
-		/// <seealso cref="CultureInfo.LCID"></seealso>
+		/// <returns>the input locale identifier for the active keyboard layout for the current foreground window.</returns>
 		public static int GetCurrentKeyboardLayout()
 		{
 			try
@@ -109,39 +113,39 @@ namespace Win_Keyboard_Layout_Remover
 		/// <summary>
 		/// Gets a <c>CultureInfo</c> object based on a culture identifier.
 		/// </summary>
-		/// <param name="layoutId">The culture identifier.</param>
+		/// <param name="langId">The culture identifier.</param>
 		/// <returns></returns>
 		/// <seealso cref="CultureInfo.LCID"></seealso>
-		public static CultureInfo GetCultureInfo(int layoutId)
-		{
-			return new CultureInfo(layoutId);
-		}
+		public static CultureInfo GetCultureInfo(int langId) => new CultureInfo(langId);
 
+		/// <summary>
+		/// Retrieves the title of the active window.
+		/// </summary>
+		/// <returns>a <c>string</c> containing the title of the active window.</returns>
 		public static string GetActiveWindowTitle()
 		{
-			const int c = 256;
-			StringBuilder buff = new StringBuilder(c);
+			const int Capacity = 256;
+			StringBuilder buff = new StringBuilder(Capacity);
 			IntPtr handle = GetForegroundWindow();
-
-			return GetWindowText(handle, buff, c) > 0 ? buff.ToString() : null;
+			return GetWindowText(handle, buff, Capacity) > 0 ? buff.ToString() : null;
 		}
 
 		/// <summary>
-		/// Sets the active keyboard layout based on a culture identifier.
+		/// Sets the active keyboard layout based on a input locale identifier.
 		/// </summary>
-		/// <param name="layoutId">The The culture identifier.</param>
+		/// <param name="langId">The The input locale identifier.</param>
 		/// <seealso cref="CultureInfo.LCID"/>
-		public static void SetInputMethod(int layoutId)
+		public static void SetInputMethod(int langId)
 		{
-			switch (layoutId)
+			switch (langId)
 			{
 				case 1053:
 					PostMessage(GetForegroundWindow(), 0x0050, (IntPtr)0, LoadKeyboardLayout("A000041D", 1));
-					Program.Logger($"Active language set to {GetCultureInfo(layoutId).DisplayName}.");
+					Program.Logger($"Active language set to {GetCultureInfo(langId).DisplayName}.");
 					break;
 				case 1049:
 					PostMessage(GetForegroundWindow(), 0x0050, (IntPtr)0, LoadKeyboardLayout("A0000419", 1));
-					Program.Logger($"Active language set to {GetCultureInfo(layoutId).DisplayName}.");
+					Program.Logger($"Active language set to {GetCultureInfo(langId).DisplayName}.");
 					break;
 				default:
 					PostMessage(GetForegroundWindow(), 0x0050, (IntPtr)0, LoadKeyboardLayout("A000041D", 1));
@@ -151,7 +155,10 @@ namespace Win_Keyboard_Layout_Remover
 		}
 	}
 
-	internal class PowerShellExecutor
+	/// <summary>
+	/// Contains methods related to invoking PowerShell scripts.
+	/// </summary>
+	public class PowerShellExecutor
 	{
 		/// <summary>
 		/// Synchronously invokes a PowerShell script and returns the object that the PowerShell script outputs.
